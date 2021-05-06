@@ -7,7 +7,7 @@ agent {
 apiVersion: v1
 kind: Pod
 metadata:
-  name: nodejs-deployment
+  name: quarkus-deployment
   labels:
     some-label: test-odu
     label : jenkins
@@ -99,7 +99,7 @@ INGRESS= "isdc20-0ce42e8480356580312b8efcc5f21aad-0001.us-south.containers.appdo
         
             steps{
              script{
-                  sh 'mvnw install'
+                  sh 'mvnw quarkus:add-extension -Dextensions="container-image-s2i"'
                 }
             }
         }
