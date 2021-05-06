@@ -95,14 +95,14 @@ INGRESS= "isdc20-0ce42e8480356580312b8efcc5f21aad-0001.us-south.containers.appdo
  
   stages {
     
-      stage('Build'){
+      /*stage('Build'){
         
             steps{
              script{
                   sh 'mvnw quarkus:add-extension -Dextensions="container-image-s2i"'
                 }
             }
-        }
+        }*/
 
         stage ('Build: Docker') {
             steps {
