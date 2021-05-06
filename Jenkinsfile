@@ -99,7 +99,7 @@ INGRESS= "isdc20-0ce42e8480356580312b8efcc5f21aad-0001.us-south.containers.appdo
         
             steps{
              script{
-                  sh 'mvnw quarkus:add-extension -Dextensions="container-image-s2i"'
+                  sh "mvn -Dmaven.test.failure.ignore=true clean package"
                 }
             }
         }*/
