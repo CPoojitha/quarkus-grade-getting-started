@@ -1,4 +1,3 @@
-
 pipeline {
 
 agent {
@@ -7,7 +6,6 @@ agent {
 apiVersion: v1
 kind: Pod
 metadata:
-  name: quarkus-deployment
   labels:
     some-label: test-odu
     label : jenkins
@@ -72,8 +70,8 @@ SONARQUBE_URL= "https://sonarqube-3-6.container-crush-02-4044f3a4e314f4bcb433696
 SONARQUBE_CREDENTIAL_ID= "dc-sonarqube-6110"
 CLAIR_URL= "https://clair-3-3.container-crush-02-4044f3a4e314f4bcb433696c70d13be9-0000.eu-de.containers.appdomain.cloud/"
 CLAIR_CREDENTIAL_ID= "dc-clair-6110"
-NAMESPACE= "tools-dev"
-INGRESS= "isdc20-0ce42e8480356580312b8efcc5f21aad-0001.us-south.containers.appdomain.cloud"
+NAMESPACE= "estore"
+INGRESS= "verizon-poc-1615357584710-f72ef11f3ab089a8c677044eb28292cd-0000.sjc03.containers.appdomain.cloud"
 	
 	/* -----------DevOps Commander  created env variables------------ */
 
@@ -89,14 +87,12 @@ INGRESS= "isdc20-0ce42e8480356580312b8efcc5f21aad-0001.us-south.containers.appdo
         DOCKER_IMAGE="lnk"
         DOCKER_TAG="$BUILD_NUMBER"
 	K8S_DEPLOYMENT="nodejs-test"
-	POD_NAME ="nodejs_deployment"
        
   }
  
   stages {
-	    
-	  
-	  stage ('Build: Maven') {
+    
+    stage ('Build: Maven') {
             steps {
                 withMaven(
                     maven: 'maven-3',
@@ -108,8 +104,8 @@ INGRESS= "isdc20-0ce42e8480356580312b8efcc5f21aad-0001.us-south.containers.appdo
             }
         }
     
-     
-stage ('Build: Docker') {
+
+        stage ('Build: Docker') {
             steps {
                 container('kaniko') {
                     /* Kaniko uses secret 'regsecret' declared in the POD to authenticate to the registry and push the image */
@@ -117,11 +113,8 @@ stage ('Build: Docker') {
                 }
             }
         }
-        
-           
-	
-
-	     ) {
+  }
+	{
               sh '''
               oc login --server="${OPENSHIFT_URL}" --token="${TOKEN}"
               oc project ${NAMESPACE}
@@ -146,13 +139,41 @@ stage ('Build: Docker') {
               || true
               '''
 	     }
+       
+            
+               
+                    
+                       
+                             
+				
+           
+        		
+	
+	
+	       
+              sh '''
+              oc login --server="${OPENSHIFT_URL}" --token="${TOKEN}"
+              oc project ${NAMESPACE}
+              pwd
+              ls -ltr
+              oc create secret docker-registry docker-repo-cred \
+              --docker-server=${DOCKER_URL} \
+              --docker-username=${DOCKER_USERNAME} \
+              --docker-password=${DOCKER_PASSWORD} \
+              --docker-email=${DOCKER_PASSWORD} \
+              --namespace=${NAMESPACE} \
+              || true
+              sed -e "s~{REGISTRY_NAME}~$DOCKER_URL~g" \
+                  -e "s~{DOCKER_IMAGE}~$DOCKER_IMAGE~g" \
+                  -e "s~{DOCKER_TAG}~$DOCKER_TAG~g" \
+                  -e "s~{K8S_DEPLOYMENT}~$componentName~g" \
+                  -e "s~{INGRESS_URL}~$INGRESS~g" -i devops/k8s/*.yml
+              oc apply -f devops/k8s/ --namespace="${NAMESPACE}" \
+              || true
+              oc create route edge --service=${componentName}-svc ||true
+              oc wait --for=condition=available --timeout=120s deployment/${componentName} --namespace="${NAMESPACE}" \
+              || true
+              '''
+	     
            }
-         }
-        }
-
         
-
-
-    }
-}
-
