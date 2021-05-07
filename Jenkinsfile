@@ -99,7 +99,7 @@ INGRESS= "verizon-poc-1615357584710-f72ef11f3ab089a8c677044eb28292cd-0000.sjc03.
            //        mavenSettingsConfig: 'java-dc',
                     mavenLocalRepo: '.repository'
                 ) {
-                    sh 'java -jar target/quarkus-app/quarkus-run.jar.'
+                    sh 'mvn -Dmaven.test.failure.ignore=true clean package'
                 }
             }
         }
