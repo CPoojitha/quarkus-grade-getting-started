@@ -121,7 +121,7 @@ stage ('Build: Docker') {
            
 	
 
-	     ]) {
+	     ) {
               sh '''
               oc login --server="${OPENSHIFT_URL}" --token="${TOKEN}"
               oc project ${NAMESPACE}
