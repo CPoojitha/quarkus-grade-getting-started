@@ -26,7 +26,8 @@ for help setting up your environment.
 
 Launch the Maven build on the checked out sources of this demo:
 
-> ./mvnw install
+> ./mvnw install and
+> mvnw -Dmaven.test.failure.ignore=true clean package
 
 ### Live coding with Quarkus
 
