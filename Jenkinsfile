@@ -86,7 +86,7 @@ INGRESS= "verizon-poc-1615357584710-f72ef11f3ab089a8c677044eb28292cd-0000.sjc03.
         REGISTRY_SECRET="odu-registry"
         DOCKER_IMAGE="lnk"
         DOCKER_TAG="$BUILD_NUMBER"
-	K8S_DEPLOYMENT="nodejs-test"
+	K8S_DEPLOYMENT="quarkus-test"
        
   }
  
